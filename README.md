@@ -17,7 +17,7 @@ Overall, my strategy was to import everything twice. Once we got most of our dat
 
 * You can also fix these issues with a plugin that customized how ASpace imports the files. Alex Duryee has spoken on this at [SAA](https://github.com/alexduryee/saa-aspace-demo) and [elsewhere](https://github.com/alexduryee/beyondthebasics). I was already much more comfortable with Python and lxml, so this was faster for a one-off import process.
 
-* While we had employed a lot of rule-based validation to ensure standardization. There were other issues, like ASpace understood that 1988-03-30/1981-01-01 was an invalid date, but out validation script did not. 
+* While we had employed a lot of rule-based validation to ensure standardization. There were other issues, like ASpace understood that 1988-03-30/1981-01-01 was an invalid date, but our validation script did not. 
 
 * the script also identified components with empty `<unittitle>` tags, etc., so I could get a list of these issues prior to import. Once I had identified the most common problems, this was much easier than having background jobs keep failing halfway through.
 
