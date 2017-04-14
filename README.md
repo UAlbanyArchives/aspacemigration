@@ -7,7 +7,7 @@ This is an overview our ArchivesSpace migration process and descriptions of the 
 Overall, my strategy was to import everything twice. Once we got most of our data into ASpace, I let our staff have a free run of the data to get comfortable with the application. We maintained our previous data stores as masters, and staff could create, edit, and delete ASpace data as much as they wanted. When we were done testing and I was comfortable with all the migration scripts, we cleared out all the data and made a clean import.
 
 
-##Clean-up EAD files for the ArchivesSpace importer
+## Clean-up EAD files for the ArchivesSpace importer
     importFix.py
 
 * Step one was getting all of our EAD data reformatted so they would all easily import into ASpace. I wrote `importFix.py` to make duplicate copies of all of our EAD XML files while stripping out and cleaning any issues that I found would cause errors during import. An example issue was that ASpace didn't want extent units stored in an attribute like 
@@ -60,7 +60,7 @@ Overall, my strategy was to import everything twice. Once we got most of our dat
 
 There are some caveats here. There are a bunch of decisions you make while writing these that I kind of made arbitrarily. It's probably more complex than it has to be. Ideally, this would be more a a communally-driven effort based on a wider set of needs and perspectives. The code is completely open, so if nothing else, I guess this could provide an example of what a Python library for ASpace might look like. I'm going to try and complete the documentation soon, and if anyone has suggestions I'd really like to hear them. If the community moves to a different approach, I'll work to update all of our processes to match the consensus, since it will be better than what I can come up with on my own.
 
-##Import collection-level records
+## Import collection-level records
     migrateCollections.py
 
 * Before ArchivesSpace, we used a custom "CMS" system for collection management and accessioning. We think it's over 15 years old, and the only way to get data out is directly from the database tables which looked like they were copied from some other system and were overtly complicated and often repeated data. Moreover, the only way to view entire records was to go into edit mode where you could easily overwrite data. If you picked an accession number for a new accession that was already taken, it would just override the old record (!!!). Overall it was a pain to enter information in the system and over time the department slowly stopped updating all but the most necessary fields. Yet, this system had the only total listing of all collections.
@@ -189,7 +189,7 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 ## Migration Day(s)
 
-#####EAD import
+### EAD import
 	importFix.py
 	checkEAD.py
 
@@ -205,12 +205,12 @@ There are some caveats here. There are a bunch of decisions you make while writi
  
 * The importing ended up taking most of the afternoon, so I discovered  my one-day migration plan was over-optimistic.
 
-##### Clean Resource Identifiers
+### Clean Resource Identifiers
 	fixNam.py
 
 * For collection identifiers we had been unsing the prefix `nam_` which is our OCLC repository ID or something, but we decided that this was overtly complex and not useful, so we decided to drop these late in the migration planning. While the `importFix.py` script was written to clear the `nam_` prefix from the `<ead> @id` and `<eadid>`, but I forgot to do this to the collection-level `<unitid>`. Unfortunately I found out the hard way that this is what ASpace ends up using as the `id_0`, so I whipped up `fixNam.py` to strip this post-import rather than start the process over again. 
 
-##### Collection-level spreadsheet import
+### Collection-level spreadsheet import
 	migrateCollections.py
 
 * Importing the basic collection-level records from the spreadsheet went fairly well. I realized that we also needed a normalized name for collection in the resource records somewhere. For example, the "Office of Career and Professional Development Records" needed to be accessible somewhere as "Career and Professional Development, Office of; Records" so it would be alphabetized correctly in our front end. So, I added a few lines in `migrateCollections.py` that adds these normal names in the Finding Aid title field.
@@ -222,7 +222,7 @@ There are some caveats here. There are a bunch of decisions you make while writi
 * To confirm all the collections, I wrote `checkCollections.py` to see what was up. It turned out that when we had updated that ID we still had a duplicate EAD file floating around, and another recent collection had an EAD file but was never entered in to the spreadsheet. These issues were easily fixed and all out collections were done.
   
 
-##### Accessions and Locations
+### Accessions and Locations
 	migrateAccesions.py
 	checkAccessions.py
 	migrateLocations.py
