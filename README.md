@@ -42,7 +42,7 @@ Overall, my strategy was to import everything twice. Once we got most of our dat
 
 * There's also some debugging tools I use all time. `pp()` pretty prints an object to the console as JSON, `fields()` lists all the keys in an object, and `serializeOutput()` writes objects to your filesystem as .json files. 
 
-* The library uses [easydict](https://pypi.python.org/pypi/easydict/) to make objects out the JSON, do you can call it with dot notation (`print collection.title`). Writing this library enabled me from rewriting the same code, or finding that script I used last week to steal some lines from. Its really cool to be able to do this:
+* The library uses [easydict](https://pypi.python.org/pypi/easydict/) to make objects out of the JSON, so you can call it with dot notation (`print collection.title`). Writing this library enabled me from rewriting the same code, or finding that script I used last week to steal some lines from. Its really cool to be able to do this:
 
     
 		from archives_tools import aspace as AS
@@ -133,7 +133,7 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * I tried and failed to get ASpace to accept multiple locations per box, which seems like it really shouldn't be allowed. You can actually have a top container linked to multiple shelves, but it won't let you then link those boxes to description records.
 
-* ASpace does let you have previous locations though, but it requires an end date, and the location record to have a temporary label. We decide to have a temporary "collection_level" label and setting the end date to 2999-01-01, and hope that we weren't creating an insurmountable Y3K problem.
+* ASpace does let you have previous locations though, but it requires an end date, and the location record to have a temporary label. We decided to have a temporary "collection_level" label and setting the end date to 2999-01-01, and hope that we weren't creating an insurmountable Y3K problem.
 
 * Doing it this way meant a lot of work with the API, because we had to find every top container assigned to each collection, translate `G-17-3-8` to a ASpace location record, find that record, update that location record to be temporary, and update the top_container record to add each location. This is exactly what `migrateLocations.py` does, and with the library it only takes 200 lines of code.
 
@@ -149,9 +149,9 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * We really didn't have the option to bring in Lyrasis to do workshops for our staff on how to use ASpace. This is going to be the primary medium for our department to create metadata and make our holdings available, so they need to be comfortable with it, and switching everyone over to a whole new system without any formal prep is a lot to ask.
 
-* The best way I find to learn a tool is to get some hands-on experience and try and break it to see where the boundaries are. Migrating all our data twice, not only lowered the stakes for the first import, but it gave us a lot of time with a fully-running ArchivesSpace with a lot of realistic test date. I opened it up to the our department and encouraged them to make new resources and accessions, delete things, and generally try test their boundaries and get comfortable. I pointed the two [some](http://www2.archivists.org/sites/all/files/OK%20State%20U%20Using%20ArchivesSpace.pdf) [guides](http://www2.archivists.org/sites/all/files/UNO_ArchivesSpace_Walkthroughs_2015.pdf) shared by the SAA Collection Management Tools Section, and they also said there's a bunch of [screencasts on YouTube](https://www.youtube.com/results?search_query=archviesspace) that really helped.
+* The best way I find to learn a tool is to get some hands-on experience and try and break it to see where the boundaries are. Migrating all our data twice, not only lowered the stakes for the first import, but it gave us a lot of time with a fully-running ArchivesSpace with a lot of realistic test data. I opened it up to the our department and encouraged them to make new resources and accessions, delete things, and generally try test their boundaries and get comfortable. I pointed them to [some](http://www2.archivists.org/sites/all/files/OK%20State%20U%20Using%20ArchivesSpace.pdf) [guides](http://www2.archivists.org/sites/all/files/UNO_ArchivesSpace_Walkthroughs_2015.pdf) shared by the SAA Collection Management Tools Section, and they also said there's a bunch of [screencasts on YouTube](https://www.youtube.com/results?search_query=archviesspace) that really helped.
 
-* Overall, ASpace is fairly intuitive, and easy to use if you comfortable working with web applications. Our department has taken to it fairly quickly, and I don't think more formal training would of helped much. Having a really good sandbox and dedicating real time to experimenting with it is definitely key.
+* Overall, ASpace is very intuitive, and easy to use if you comfortable working with web applications. Our department has taken to it fairly quickly, and I don't think more formal training would of helped much. Having a really good sandbox and dedicating real time to experimenting with it is definitely key.
 
 * We're also still working on establishing best practices for use and documentation for our students. I think this is actually a bigger hurdle than leaning the tool itself.
 
@@ -162,15 +162,15 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * The other really cool thing is that the ASpace API is backed by a data model. This way it closely defines its acceptable data, and rejects anything outside of its parameters. I've found that this is makes life so much easier than say, managing your data in XML, since it has the effect of making your data much more stable. 
 
-* If ASpace doesn't do something the way you like, you can just use a different tool to interact with your ASpace data. This way, ASpace can really support workflows that embrace the separation-of-concerns principle. Here ASpace is at the center of an open archives ecosystem, and you can have smaller, impermanent tools to fill specific functions really well. Often, a modular system like this can be easier to maintain, as int the future you can replace these smaller tools one-by-one as they become obsolete, rather than the daunting task of one huge migration.
+* If ASpace doesn't do something the way you like, you can just use a different tool to interact with your ASpace data. This way, ASpace can really support workflows that embrace the separation-of-concerns principle. Here ASpace is at the center of an open archives ecosystem, and you can have smaller, impermanent tools to fill specific functions really well. Often, a modular system like this can be easier to maintain, as in the future you can replace these smaller tools one-by-one as they become obsolete, rather than the daunting task of one huge migration.
 
 * A lot of this is built upon the work Hillel Arnold and Patrick Galligan have done at the Rockefeller Archive Center. They wrote a [plugin](https://github.com/RockefellerArchiveCenter/as-cors) that lets you work with the API from a [single HTML page with JavaScript](http://blog.rockarch.org/?p=1610). They used this to write [Find-it](https://github.com/RockefellerArchiveCenter/find-it), a [simple text field to return locations for ASpace ref_ids](http://blog.rockarch.org/?p=1621).
 
-* Find-It solved a key problem for us as one of the only things our old "CMS" did really well was that you could type in "Crone" and quickly get shelf locations for the Michelle Crone Papers. Our other archivists were asking for something similar in ArchivesSpace, and didn't like they you had to look  Yet, the odd way I did our locations posed some problems. Ref_ids would also work, but we needed to return locations for top containers assigned to resources as well.
+* Find-It solved a key problem for us as one of the only things our old "CMS" did really well was that you could type in "Crone" and quickly get shelf locations for the Michelle Crone Papers. Our other archivists were asking for something similar in ArchivesSpace, and didn't like they you had to look through three different records to get this information in ASpace. Yet, the odd way I did our locations posed some problems. Ref_ids would also work, but we needed to return locations for top containers assigned to resources as well.
 
 * With my hacky JavaScript skills (and some help from Slack) I set it up to also return locations for resources using the search API endpoint and the id_0 field. Using the search API made me realize that I could also make an API call that returns a keyword search for resources. The search returns links to the Resource page in ASpace and XTF as well, which makes Find-it a really quick first access point to our collections as well.
 
-* The last request I got was for some way to access locations from resources with lower levels of description, so I was even able to call the resource tree and add links to lower levels if there are no instances. Overall it became a bit more complex than I was envisioning. Our fork is [here](https://github.com/UAlbanyArchives/find-it), but I'd recommend starting with Rockefeller's much cleaner version and using ours as more of an example.
+* The last request I got was for some way to access locations from resources with lower levels of description, so I was even able to call the resource tree and add links to lower levels if there are no instances. I just made find-it accept ids as a hash and these links just reloads the page with that lower-level ref_id. Overall it became a bit more complex than I was envisioning. Our fork is [here](https://github.com/UAlbanyArchives/find-it), but I'd recommend starting with Rockefeller's much cleaner version and using ours as more of an example.
 
 * Finally, the single search bar on a white background was really boring, so I wrote a quick script that updates the background to [Bing's image of the day](http://www.bing.com/gallery/) [API](http://stackoverflow.com/questions/10639914/is-there-a-way-to-get-bings-photo-of-the-day).
 
@@ -182,9 +182,9 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * The last request I got from out staff was for creating container list inventories. We use undergraduate student assistants to do most of this data entry work, and we found that ASpace rapid data entry would require a good amount of training for our students who work few hours with a really high turnover rate.
 
-* So I wrote [some Python scripts](https://github.com/UAlbanyArchives/asInventory) to manage inventory listings with spreadsheets and the ASpace API. One parses a .xslx file and uploads file-level archival objects through the API. It will also take a bunch of access files and make digital objects, place the files on our server and link them to archival objects. Another script reads an existing inventory back to a spreadsheet with all the relevant URIs so we can roundtrip these inventories for future updates.
+* So I wrote [some Python scripts](https://github.com/UAlbanyArchives/asInventory) to manage inventory listings with spreadsheets and the ASpace API. One parses a .xslx file and uploads file-level archival objects through the API. It will also take a bunch of access files and makes digital objects, places the files on our server and links them to archival objects. Another script reads an existing inventory back to a spreadsheet with all the relevant URIs so we can roundtrip these inventories for future updates.
 
-* I also envision this as a near-term solution, as its possible that we end up doing all this naively in ASpace in the future. The cool thing is that the ASpace API makes all these tools really easy and quick to make, and they solve real immediate problems for us. Yet, not of these tools are really essential for us, and if they become too difficult to manage, we can just drop them and move on to something else.
+* I also envision this as a near-term solution, as its possible that we end up doing all this natively in ASpace in the future. The cool thing is that the ASpace API makes all these tools really easy and quick to make, and they solve real immediate problems for us. Yet, none of these tools are really essential for us, and if they become too difficult to manage, we can just drop them and move on to something else.
 
 
 ## Migration Day(s)
@@ -199,9 +199,9 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * One thing I had noticed during the first time was than when you import a large amount of EADs, it takes the index awhile to catch up. ASpace still told me I had only 465 resources instead of 633, but that soon updated to 503. Yet, in about an hour I was still missing 29 collections. I assumed that this was still the index, but I quickly wrote checkEAD.py to see how many collections I could access though the API and I was still missing 29.
 
-* It turned out that two import jobs had actually failed, but ASpaces listed them as Complete for some reason. One issue was when we changed an ID and there was an eadid conflict, and the other issue was that I totally forgot about that huge `<chronlist>` that failed the first time.
+* It turned out that two import jobs had actually failed, but ASpace listed them as Complete for some reason. One issue was when we changed an ID and there was an eadid conflict, and the other issue was that I totally forgot about that huge `<chronlist>` that failed the first time.
 
-* These were easy fixes bu the lesson here is always test your imports and don't trust the index.
+* These were easy fixes but the lesson here is always test your imports and don't trust the index.
  
 * The importing ended up taking most of the afternoon, so I discovered  my one-day migration plan was over-optimistic.
 
@@ -213,13 +213,13 @@ There are some caveats here. There are a bunch of decisions you make while writi
 ### Collection-level spreadsheet import
 	migrateCollections.py
 
-* Importing the basic collection-level records from the spreadsheet went fairly well. I realized that we also needed a normalized name for collection in the resource records somewhere. For example, the "Office of Career and Professional Development Records" needed to be accessible somewhere as "Career and Professional Development, Office of; Records" so it would be alphabetized correctly in our front end. So, I added a few lines in `migrateCollections.py` that adds these normal names in the Finding Aid title field.
+* Importing the basic collection-level records from the spreadsheet went fairly well. I realized that we also needed a normalized name for each collection in the resource records somewhere. For example, the "Office of Career and Professional Development Records" needed to be accessible somewhere as "Career and Professional Development, Office of; Records" so it would be alphabetized correctly in our front end. So, I added a few lines in `migrateCollections.py` that adds these normal names in the Finding Aid title field.
 
 * One annoying thing was that after I posted all the spreadsheet records, the index was a bit slow to update. I was all set to migrate the accessions, but to match them up with the resource records, I had to use the index to search for matching id_0 fields. However, within an hour or so suddenly ASpace had updated the index, and I was all set.
  
 * ASpace told me I had 904 resources, which was curiously two more than we had in our master list. I assumed we failed to update our master list for two EADs and I imported them from the spreadsheet as well.
  
-* To confirm all the collections, I wrote `checkCollections.py` to see what was up. It turned out that when we had updated that ID we still had a duplicate EAD file floating around, and another recent collection had an EAD file but was never entered in to the spreadsheet. These issues were easily fixed and all out collections were done.
+* To confirm all the collections, I wrote `checkCollections.py` to see what was up. It turned out that when we had updated that ID we still had a duplicate EAD file floating around, and another recent collection had an EAD file but was never entered in to the spreadsheet. These issues were easily fixed and all our collections were done.
   
 
 ### Accessions and Locations
@@ -230,7 +230,7 @@ There are some caveats here. There are a bunch of decisions you make while writi
 
 * The accessions and locations went easy without any issues. This time I wrote `checkAccessions.py` to find all the accession issues from last time around, and everything went nicely.
 
-* Some of the locations has been updated since the last import, so `checkLocations.py` verifies that these locations are indeed in ArchivesSpace, prior to running the import scripts.
+* Some of the locations had been updated since the last import, so `checkLocations.py` verifies that these locations are indeed in ArchivesSpace, prior to running the import scripts.
 
 ## Export Scripts
 	exportPublicData.py
@@ -247,7 +247,7 @@ There are some caveats here. There are a bunch of decisions you make while writi
 * `exportPublicData.py` loops though all the resources modified since the last export and only exports records that are published. Since we still have a bunch of resources that only have really simple collection-level descriptions, I didn't want to export EADs and PDFs for these, so I just exported the important information to a pipe delimited CSV.
 
 * I has always envisioned the ASpace API as completely replacing our spreadsheet that generates the static browse pages for our public access system. Yet, I didn't want to 
-export all that data over and over again, only make incremental updates like the EAD exports. Since my original static pages scripts were designed to loop though a spreadsheet, shifting to CSVs wasn't very difficult. I also didn't want to spend a lot of time changing things we have some longer-term plans to export this data into a web framework. 
+export all that data over and over again, only make incremental updates like the EAD exports. Since my original static pages scripts were designed to loop though a spreadsheet, shifting to CSVs wasn't very difficult. I also didn't want to spend a lot of time changing things since we have some longer-term plans to export this data into a web framework. 
 
 * `exportPublicData.py` updates this CSV data for modified collections as it exports EAD XML files. It then uses Python's [subprocess](https://docs.python.org/3/library/subprocess.html) module to call git commands and version these exports and pushes them to [Github](https://github.com/UAlbanyArchives/collections). It then copies new EAD files to our [public XTF instance](http://meg.library.albany.edu:8080/archive/search?keyword=&browse-all=yes). Finally, it calls `staticPages.py` to create all of the [static](http://library.albany.edu/speccoll/findaids/eresources/static/apap.html) [browse](http://library.albany.edu/speccoll/findaids/eresources/static/alpha.html) [pages](http://library.albany.edu/speccoll/findaids/eresources/static/subjects.html).
 
@@ -257,15 +257,15 @@ export all that data over and over again, only make incremental updates like the
 
 ## Timelines
 
-* So, how long did this all take? We got ArchivesSpace up an running on a server near the end of December 2016, really started the migration scripts during the start of February and finished up everything on the second week of April. Most of the migration prep time spent was in February and the first week of March, and most of March was devoted to staff testing/experimenting and writing the smaller workflow tools.
+* So, how long did this all take? We got ArchivesSpace up an running on a server near the end of December 2016, really started the migration scripts during the start of February, and finished up everything on the second week of April. Most of the migration prep time spent was in February and the first week of March, and most of March was devoted to staff testing/experimenting and writing the smaller workflow tools.
 
 * The final migration ended up taking about 2 1/2 workdays, which I'm fairly happy with. That was the only downtime we had when changes couldn't be made.
 
 * This was also not committing a large department-wide effort. It was mostly me managing everything, and although it was probably my primary project during that period, I was also managing the regular day to day tasks of the University Archives: doing accessions and reference, managing students, and working with other offices on campus to transfer their permanent records, and also service and (not very much) scholarship. I'm also lucky to have two excellent graduate students in the University Archives this year, Ben Covell and Erik Stolarski. It really can't be understated how having really bright and hardworking students enables us to do so much.
 
-* This timeframe is also a bit deceiving, as the real work started about 2 years ago when we worked to really standardize our descriptive data. A lot of the work we did back then really shortened up our timeline, as we didn't have to do wholesale metadata cleanup before migrating. Out data still has some issues though, but ArchivesSpace has some features like the controlled values lists that can help fix some of our irregularities after migrating. The cool thing about this is that a lot of the clean up work can be distributed, as anyone in the department can easily make fixes whenever they see something.
+* This timeframe is also a bit deceiving, as the real work started about 2 years ago when we worked to really standardize our descriptive data. A lot of the work we did back then really shortened up our timeline, as we didn't have to do wholesale metadata cleanup before migrating. Our data still has some issues though, but ArchivesSpace has some features like the controlled values lists that can help fix some of our irregularities after migrating. The cool thing about this is that a lot of the clean up work can be distributed, as anyone in the department can easily make fixes whenever they see something.
 
-* Additionally, we cut some corners on the data-side -- particularly the locations. There are some long-term costs here as I decided to take lot of the labor required to straighten out all this data, and spread it our over time. I'm happy with this decision, as we have other competing priorities, like getting good collection-level records for everything, and overall increasing access to collections. We also could have put off the migration until some of our problems could be fixed, but there were significant maintenance costs to our old way of doing things that we really don't have anymore. I'm hoping this frees us up to work on some of the more ambitious project we have planned.
+* Additionally, we cut some corners on the data-side -- particularly the locations. There are some long-term costs here as I decided to take lot of the labor required to straighten out all this data, and spread it out over time. I'm happy with this decision, as we have other competing priorities, like getting good collection-level records for everything, and overall increasing access to collections. We also could have put off the migration until some of our problems could be fixed, but there were significant maintenance costs to our old way of doing things that we really don't have anymore. I'm hoping this frees us up to work on some of the more ambitious project we have planned.
 
 ## Author
 
