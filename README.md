@@ -13,7 +13,7 @@ Overall, my strategy was to import everything twice. Once we got most of our dat
 * Step one was getting all of our EAD data reformatted so they would all easily import into ASpace. I wrote `importFix.py` to make duplicate copies of all of our EAD XML files while stripping out and cleaning any issues that I found would cause errors during import. An example issue was that ASpace didn't want extent units stored in an attribute like 
 	`<extent unit="cubic ft.">21</extent>` Instead, it wanted `<extent>21 cubic ft.</extent>`
 
-* We has been using an internal semantic ID system, but we wanted to get rid of these and rely on the ASpace ref_IDs instead, so the script also removes all the @id attributes in <c01>, <c02>, etc.
+* We had been using an internal semantic ID system, but we wanted to get rid of these and rely on the ASpace ref_IDs instead, so the script also removes all the @id attributes in <c01>, <c02>, etc.
 
 * You can also fix these issues with a plugin that customized how ASpace imports the files. Alex Duryee has spoken on this at [SAA](https://github.com/alexduryee/saa-aspace-demo) and [elsewhere](https://github.com/alexduryee/beyondthebasics). I was already much more comfortable with Python and lxml, so this was faster for a one-off import process.
 
@@ -36,7 +36,7 @@ Overall, my strategy was to import everything twice. Once we got most of our dat
 ## Don't Repeat Yourself
 [aspace Python Library](https://github.com/UAlbanyArchives/archives_tools)
 
-* When I wrote the delete resources script I discovered that working with the API is awesome, but I was also repeatedly calling the same API requests. There is no complete Python library for the ArchivesSpace API, so most people make calls manually with [requests](http://docs.python-requests.org/en/master/). Artefactual labs also has a [basic library](https://github.com/artefactual-labs/agentarchives) for this, but it doesn't do a lot for you and still involves manually dealing with a lot of JSON in a way that I didn't find intiative. Basically, I wanted to iterate though the ASpace data as easily as lxml loops though XML data. This often involves multiple API calls for a single function.
+* When I wrote the delete resources script I discovered that working with the API is awesome, but I was also repeatedly calling the same API requests. There is no complete Python library for the ArchivesSpace API, so most people make calls manually with [requests](http://docs.python-requests.org/en/master/). Artefactual labs also has a [basic library](https://github.com/artefactual-labs/agentarchives) for this, but it doesn't do a lot for you and still involves manually dealing with a lot of JSON in a way that I didn't find intuitive. Basically, I wanted to iterate though the ASpace data as easily as lxml loops though XML data. This often involves multiple API calls for a single function.
 
 * During the course of the migration I started writing a bunch of functions that manage the API behind the scenes. This was I can quickly iterate though collections with `getResources()`, collection arrangement with `getTree()` and `getChildren()` and even find a collection by its identifier with `getResourceID()`, or a location by its title string with `findLocations()`. Its also handy to have some blank objects at your fingertips, like with `makeArchObj()`, so you can create new archival objects without knowing exactly what JSON ASpace needs.
 
