@@ -15,7 +15,7 @@ def eadExportConverter(outputPath):
 		physdescCount = 0
 		for physdesc in cmptn:
 			if physdesc.tag == ns + "physdesc":
-				physdescCount = physdescCount + 1
+				regularSwitch = False
 				daoSwitch = False
 				webSwitch = False
 				facetSwitch = False
@@ -25,13 +25,19 @@ def eadExportConverter(outputPath):
 						daoSwitch = True
 						daoExtent = physdesc.find(ns + "extent").text.split("Digital Files")[0].strip()
 						physdesc.remove(physdesc.find(ns + "extent"))
-					elif physdesc.find(ns + "extent").text.endswith("Captures"):
+					elif physdesc.find(ns + "extent").text.lower().endswith("captures"):
 						webSwitch = True
-						webExtent = physdesc.find(ns + "extent").text.split("Captures")[0].strip()
+						webExtent = physdesc.find(ns + "extent").text.split(" ")[0].strip()
 						physdesc.remove(physdesc.find(ns + "extent"))
 					elif physdescCount > 1:
+						physdescCount = physdescCount + 1
 						facetSwitch = True
 						facetText = physdesc.find(ns + "extent").text
+						physdesc.remove(physdesc.find(ns + "extent"))
+					else:
+						physdescCount = physdescCount + 1
+						regularSwitch = True
+						regularExtent = physdesc.find(ns + "extent").text
 						physdesc.remove(physdesc.find(ns + "extent"))
 				
 				extentCount = 0
@@ -48,6 +54,11 @@ def eadExportConverter(outputPath):
 								facetSwitch = True
 								facetText = physdesc.find(ns + "extent").text
 							physdesc.remove(extent)
+				if regularSwitch == True:
+					regular = ET.Element(ns + "extent")
+					regular.text = regularExtent.split(" ")[0]
+					regular.set("unit",  regularExtent.split(" ")[1])
+					cmptn.find(ns +"physdesc").append(regular)
 				if daoSwitch == True:
 					dimen = ET.Element(ns + "dimensions")
 					dimen.text = daoExtent
@@ -61,16 +72,24 @@ def eadExportConverter(outputPath):
 					facetElement = ET.Element(ns + "physfacet")
 					facetElement.text = facetText
 					cmptn.find(ns +"physdesc").append(facetElement)
+			
+			physChildCount = 0
+			for childTag in physdesc:
+				physChildCount += 1
+			if physChildCount == 0:
+				cmptn.remove(physdesc)
+				
 	
 	def c0Numbers(element, ns, level):
 		for child in element:
 			if child.tag == (ns + "c"):
 				child.tag = ns + "c0" + str(level)
-				phydescFix(child.find(ns + "did"), ns)
+				#phydescFix(child.find(ns + "did"), ns)
 				c0Numbers(child, ns, level + 1)
 	
 	did =  root.find("{urn:isbn:1-931666-22-9}archdesc/{urn:isbn:1-931666-22-9}did")
 	root.set("id", did.find(ns + "unitid").text)
+	print (root.attrib["id"])
 	oldDate = did.find(ns +"unitdate")
 	titleElement = did.find(ns +"unittitle")
 	titleElement.append(oldDate)
